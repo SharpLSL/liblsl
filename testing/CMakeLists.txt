@@ -102,8 +102,6 @@ target_link_libraries(lsl_test_internal PRIVATE lslobj lslboost common catch_mai
 # Internal tests need pugixml headers (lslobj links pugixml privately)
 if(LSL_PUGIXML_IS_FETCHED)
     target_include_directories(lsl_test_internal PRIVATE ${pugixml_SOURCE_DIR}/src)
-else()
-    target_link_libraries(lsl_test_internal PRIVATE pugixml::pugixml)
 endif()
 # Pretend that lsl_test_internal is part of a shared lib so that it can use the __export symbols lslobj. REQ by MinGW.
 target_compile_definitions(lsl_test_internal PRIVATE LIBLSL_EXPORTS)
@@ -120,8 +118,6 @@ target_compile_definitions(lsl_test_resolve_bad_interface PRIVATE LIBLSL_EXPORTS
 # Needs pugixml headers (resolver_impl.h -> stream_info_impl.h includes pugixml)
 if(LSL_PUGIXML_IS_FETCHED)
     target_include_directories(lsl_test_resolve_bad_interface PRIVATE ${pugixml_SOURCE_DIR}/src)
-else()
-    target_link_libraries(lsl_test_resolve_bad_interface PRIVATE pugixml::pugixml)
 endif()
 
 # resolve_machine test sets the api_config singleton, so it lives in its own executable.
@@ -131,8 +127,6 @@ target_compile_definitions(lsl_test_resolve_machine PRIVATE LIBLSL_EXPORTS)
 # Needs pugixml headers (resolver_impl.h -> stream_info_impl.h includes pugixml)
 if(LSL_PUGIXML_IS_FETCHED)
     target_include_directories(lsl_test_resolve_machine PRIVATE ${pugixml_SOURCE_DIR}/src)
-else()
-    target_link_libraries(lsl_test_resolve_machine PRIVATE pugixml::pugixml)
 endif()
 
 # resolve_over_tcp test sets the api_config singleton, so it lives in its own executable.
@@ -142,8 +136,6 @@ target_compile_definitions(lsl_test_resolve_over_tcp PRIVATE LIBLSL_EXPORTS)
 # Needs pugixml headers (resolver_impl.h -> stream_info_impl.h includes pugixml)
 if(LSL_PUGIXML_IS_FETCHED)
     target_include_directories(lsl_test_resolve_over_tcp PRIVATE ${pugixml_SOURCE_DIR}/src)
-else()
-    target_link_libraries(lsl_test_resolve_over_tcp PRIVATE pugixml::pugixml)
 endif()
 
 # resolve_query_port test sets the api_config singleton, so it lives in its own executable.
@@ -153,8 +145,6 @@ target_compile_definitions(lsl_test_resolve_query_port PRIVATE LIBLSL_EXPORTS)
 # Needs pugixml headers (resolver_impl.h -> stream_info_impl.h includes pugixml)
 if(LSL_PUGIXML_IS_FETCHED)
     target_include_directories(lsl_test_resolve_query_port PRIVATE ${pugixml_SOURCE_DIR}/src)
-else()
-    target_link_libraries(lsl_test_resolve_query_port PRIVATE pugixml::pugixml)
 endif()
 
 if(LSL_BENCHMARKS)
