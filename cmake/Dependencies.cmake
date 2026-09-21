@@ -89,10 +89,6 @@ if(NOT LSL_PUGIXML_IS_FETCHED)
     endif()
 endif()
 
-if(NOT LSL_BUNDLED_BOOST)
-    list(APPEND lsllinklibs Boost::boost Boost::disable_autolinking)
-endif()
-
 if(MINGW)
     list(APPEND lsllinklibs bcrypt)
 endif()

@@ -4,10 +4,6 @@ include(CMakeFindDependencyMacro)
 
 find_dependency(Threads)
 
-if(NOT @LSL_BUNDLED_BOOST@)
-    find_dependency(Boost)
-endif()
-
 if(NOT @LSL_FETCH_PUGIXML@)
     find_dependency(pugixml)
 endif()
