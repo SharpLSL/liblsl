@@ -9,28 +9,20 @@ include(cmake/GitVersion.cmake)
 if(LSL_FETCH_PUGIXML)
     message(STATUS "Fetching pugixml via FetchContent")
     include(FetchContent)
-    set(PUGIXML_BUILD_TESTS OFF CACHE BOOL "" FORCE)
-    set(PUGIXML_NO_EXCEPTIONS OFF CACHE BOOL "" FORCE)
-    set(PUGIXML_INSTALL OFF CACHE BOOL "" FORCE)
-    # Force static library even if parent project sets BUILD_SHARED_LIBS
-    set(PUGIXML_BUILD_SHARED_AND_STATIC_LIBS OFF CACHE BOOL "" FORCE)
-    set(_lsl_saved_build_shared_libs ${BUILD_SHARED_LIBS})
-    set(BUILD_SHARED_LIBS OFF)
     FetchContent_Declare(
         pugixml
         GIT_REPOSITORY https://github.com/zeux/pugixml.git
         GIT_TAG v1.15
         GIT_SHALLOW TRUE
-        EXCLUDE_FROM_ALL
+        # Don't add_subdirectory() pugixml's own CMakeLists.txt / build a separate library -
+        # we compile its single source file directly into lslobj instead (see
+        # TargetObjLib.cmake), so there's no extra library to install/export for static
+        # consumers to worry about. This subdir simply doesn't have a CMakeLists.txt.
+        SOURCE_SUBDIR "not-used-see-comment-above"
     )
     FetchContent_MakeAvailable(pugixml)
-    set(BUILD_SHARED_LIBS ${_lsl_saved_build_shared_libs})
-    unset(_lsl_saved_build_shared_libs)
-    # Hide pugixml symbols - apply hidden visibility to the pugixml target
-    set_target_properties(pugixml PROPERTIES
-        CXX_VISIBILITY_PRESET hidden
-        VISIBILITY_INLINES_HIDDEN ON
-    )
+    set(LSL_PUGIXML_SOURCE "${pugixml_SOURCE_DIR}/src/pugixml.cpp")
+    set(LSL_PUGIXML_INCLUDE_DIR "${pugixml_SOURCE_DIR}/src")
     set(LSL_PUGIXML_IS_FETCHED TRUE)
 else()
     message(STATUS "Using system pugixml")
@@ -78,6 +70,8 @@ target_compile_definitions(lslboost INTERFACE BOOST_ALL_NO_LIB)
 # hidden, which is correct since the dependencies are already resolved inside the shared lib.
 set(lsllinklibs Threads::Threads)
 
+# Fetched pugixml has no library target - its source is compiled directly into lslobj, so
+# there's nothing to link here (see TargetObjLib.cmake).
 if(NOT LSL_PUGIXML_IS_FETCHED)
     if(TARGET pugixml::pugixml)
         list(APPEND lsllinklibs pugixml::pugixml)

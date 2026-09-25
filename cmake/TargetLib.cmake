@@ -25,11 +25,15 @@ if(LSL_FORCE_FANCY_LIBNAME)
     )
 endif()
 
-# Link dependencies. The only dependency is lslobj, which contains the bulk of the library code and linkages.
-# Note: We link PRIVATE because lslobj exposes extra symbols that are not part of the public API
-#  but are used by the internal tests.
-# Note: We use BUILD_INTERFACE to avoid requiring lslobj in the export set - the object library's
-#  objects are linked directly into lsl, so consumers don't need lslobj.
+# Link lslobj and external dependencies. lslobj contains the bulk of the library code
+# and linkages.
+# Note: We link PRIVATE because lslobj exposes extra symbols that are not part of the
+# public API but are used by the internal tests.
+# Note: We use BUILD_INTERFACE to avoid requiring lslobj in the export set - the object
+# library's objects are linked directly into lsl, so consumers don't need lslobj.
+#
+# Also link external dependencies directly to lsl so they are included in the link
+# interface for static consumers.
 target_link_libraries(lsl PRIVATE $<BUILD_INTERFACE:lslobj> ${lsllinklibs})
 
 # Set the include directories for the lsl target.

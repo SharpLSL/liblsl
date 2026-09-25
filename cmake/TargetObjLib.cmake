@@ -76,14 +76,12 @@ if(NOT LSL_OPTIMIZATIONS)
     target_compile_definitions(lslobj PUBLIC ASIO_SEPARATE_COMPILATION)
 endif()
 
-# - pugixml (either fetched via FetchContent or system package)
+# pugixml fetched sources are compiled directly into lslobj so its object code ends up
+# embedded in lsl itself, with no separate library to link/install/export (see
+# Dependencies.cmake). System pugixml is a normal link dependency, already part of
+# lsllinklibs above. Global CMAKE_CXX_VISIBILITY_PRESET (see CompilerSettings.cmake)
+# already keeps its symbols hidden from the shared library, same as the rest of lslobj.
 if(LSL_PUGIXML_IS_FETCHED)
-    # Fetched pugixml is always static - use BUILD_INTERFACE to avoid requiring
-    # pugixml in the export set since the static library objects are linked
-    # into lsl directly.
-    target_link_libraries(lslobj PRIVATE $<BUILD_INTERFACE:pugixml::pugixml>)
-    # Hide pugixml symbols from the shared library on Linux
-    if(UNIX AND NOT APPLE)
-        target_link_options(lslobj PRIVATE "LINKER:--exclude-libs,libpugixml.a")
-    endif()
+    target_sources(lslobj PRIVATE ${LSL_PUGIXML_SOURCE})
+    target_include_directories(lslobj SYSTEM PUBLIC $<BUILD_INTERFACE:${LSL_PUGIXML_INCLUDE_DIR}>)
 endif()
